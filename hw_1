@@ -1,0 +1,7 @@
+python3 –m venv name_of_env (py –m venv name_of_env)
+./name_of_env/Scripts/activate for WINDOWS
+source ./name_of_env/bin/activate for UNIX systems (Mac OS and Linux)
+pip install django
+pip install djangorestframework markdown django-filter (no need for now)
+pip freeze > requirements.txt
+pip install –r requirements.txt
