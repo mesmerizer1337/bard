@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\cd_2",
+    "\\hw_3",
+    "\\hw_3\\hw_3",
+    "\\hw_3\\hw_3\\todos",
+    "\\hw_3\\hw_3\\todos\\migrations",
+    "\\hw_3\\hw_3\\todos\\templates",
+    "\\hw_3\\hw_3\\todos\\templates\\todos",
+    "\\hw_3\\hw_3\\todos\\__pycache__"
+  ],
+  "SelectedNode": "\\hw_3\\hw_3\\todos\\migrations\\__init__.py",
+  "PreviewInSolutionExplorer": false
+}
