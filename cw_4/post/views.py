@@ -33,6 +33,17 @@ def thread_edit(request, id):
         form = ThreadForm(instance=thread)
     return render(request, 'post/thread_form.html', {'form': form, 'thread': thread})
 
+# Создание новой темы
+def thread_create(request):
+    if request.method == 'POST':
+        form = ThreadForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('threads')  # Перенаправление на список тем
+    else:
+        form = ThreadForm()
+    return render(request, 'post/thread_form.html', {'form': form})
+
 # Удаление поста
 def post_delete(request, id):
     post = get_object_or_404(Post, id=id)
