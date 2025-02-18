@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Темы{% endblock %}
+{% block content %}
+    <h1>Темы</h1>
+    <ul class="list-group">
+        {% for thread in threads %}
+            <li class="list-group-item">
+                <a href="{% url 'thread_detail' thread.id %}">{{ thread.name }}</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Нет тем</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Создать тему</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!-- thread_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABQbPyLrLh1g1zRNSI5V4x/Sc1u9WQbXIjtyjc23jD9oI0vXzYpC5n65" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Threads</h1>
+
+        <!-- Список всех тем -->
+        <ul class="list-group mb-4">
+            {% for thread in threads %}
+                <li class="list-group-item">
+                    <a href="{% url 'thread_detail' thread.id %}">{{ thread.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Кнопка для открытия модального окна с формой создания новой темы -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createThreadModal">
+            Create New Thread
+        </button>
+
+        <!-- Модальное окно для создания новой темы -->
+        <div class="modal fade" id="createThreadModal" tabindex="-1" aria-labelledby="createThreadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createThreadModalLabel">Create New Thread</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'thread_create' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0gV8F2P7tx6cm1xQWwRO5bs9eS6gyF7g4kwpTk6mMmIzZnZT" crossorigin="anonymous"></script>
+</body>
+</html>
