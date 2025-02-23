@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Добавить пост в тему "{{ thread.title }}"</h2>
+
+    <!-- Форма создания поста -->
+    <form method="POST" class="card p-4 shadow-sm">
+        {% csrf_token %}
+
+        <!-- Вывод ошибок формы -->
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Ошибка!</strong> Проверьте введенные данные.
+        </div>
+        {% endif %}
+
+        <!-- Поле для ввода контента поста -->
+        <div class="mb-3">
+            <label for="content" class="form-label">Текст сообщения:</label>
+            {{ form.content }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Опубликовать</button>
+    </form>
+
+    <!-- Кнопка возврата к теме -->
+    <a href="{% url 'thread_detail' thread.id %}" class="btn btn-secondary mt-3">Назад к теме</a>
+</div>
+{% endblock %}

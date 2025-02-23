@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% if thread %}Edit Thread{% else %}Create Thread{% endif %}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>
+
+{% if thread %}
+    <a href="{% url 'thread_delete' thread.id %}" class="btn btn-danger mt-3">Delete Thread</a>
+{% endif %}
+
+<a href="{% url 'threads' %}" class="btn btn-secondary mt-3">Back to Threads</a>
+{% endblock %}

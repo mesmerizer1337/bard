@@ -1,66 +1,74 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Thread, Post
-from .forms import ThreadForm, PostForm
+from .forms import PostForm, ThreadForm
 
-# Список всех тем
 def thread_list(request):
-    threads = Thread.objects.all()
+    """Список всех тем (Thread)"""
+    threads = Thread.objects.all().order_by('-created_at')
     return render(request, 'post/thread_list.html', {'threads': threads})
 
-# Детали конкретной темы
-def thread_detail(request, id):
-    thread = get_object_or_404(Thread, id=id)
-    posts = Post.objects.filter(thread=thread)
+def thread_detail(request, thread_id):
+    """Детальная страница темы (Thread)"""
+    thread = get_object_or_404(Thread, id=thread_id)
+    posts = thread.posts.all().order_by('created_at')  # Исправленный related_name в модели Post
     return render(request, 'post/thread_detail.html', {'thread': thread, 'posts': posts})
 
-# Удаление темы
-def thread_delete(request, id):
-    thread = get_object_or_404(Thread, id=id)
-    if request.method == 'POST':
-        thread.delete()
-        return redirect('threads')  # Перенаправление на список тем
-    return render(request, 'post/thread_confirm_delete.html', {'thread': thread})
-
-# Редактирование темы
-def thread_edit(request, id):
-    thread = get_object_or_404(Thread, id=id)
-    if request.method == 'POST':
-        form = ThreadForm(request.POST, instance=thread)
-        if form.is_valid():
-            form.save()
-            return redirect('thread_detail', id=thread.id)
-    else:
-        form = ThreadForm(instance=thread)
-    return render(request, 'post/thread_form.html', {'form': form, 'thread': thread})
-
-# Создание новой темы
+@login_required
 def thread_create(request):
-    if request.method == 'POST':
+    """Создание новой темы (Thread)"""
+    if request.method == "POST":
         form = ThreadForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('threads')  # Перенаправление на список тем
+            thread = form.save()
+            messages.success(request, "Тема успешно создана.")
+            return redirect('thread_detail', thread_id=thread.id)
     else:
         form = ThreadForm()
+
     return render(request, 'post/thread_form.html', {'form': form})
 
-# Удаление поста
-def post_delete(request, id):
-    post = get_object_or_404(Post, id=id)
-    thread_id = post.thread.id
-    if request.method == 'POST':
-        post.delete()
-        return redirect('thread_detail', id=thread_id)  # Перенаправление на страницу темы
-    return render(request, 'post/post_confirm_delete.html', {'post': post})
+@login_required
+def thread_delete(request, thread_id):
+    """Удаление темы (Thread)"""
+    thread = get_object_or_404(Thread, id=thread_id)
+    
+    if request.method == "POST":
+        thread.delete()
+        messages.success(request, "Тема успешно удалена.")
+        return redirect('thread_list')
 
-# Редактирование поста
-def post_edit(request, id):
-    post = get_object_or_404(Post, id=id)
-    if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+    return render(request, 'post/thread_confirm_delete.html', {'thread': thread})
+
+@login_required
+def post_create(request, thread_id):
+    """Создание нового поста (Post) в теме"""
+    thread = get_object_or_404(Thread, id=thread_id)
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('thread_detail', id=post.thread.id)
+            post = form.save(commit=False)
+            post.thread = thread
+            post.author = request.user  # Автор поста - текущий пользователь
+            post.save()
+            messages.success(request, "Пост успешно добавлен.")
+            return redirect('thread_detail', thread_id=thread.id)
     else:
-        form = PostForm(instance=post)
-    return render(request, 'post/post_form.html', {'form': form, 'post': post})
+        form = PostForm()
+
+    return render(request, 'post/post_form.html', {'form': form, 'thread': thread})
+
+@login_required
+def post_delete(request, post_id):
+    """Удаление поста (Post)"""
+    post = get_object_or_404(Post, id=post_id)
+    thread_id = post.thread.id  # Сохраняем id темы перед удалением
+
+    if request.method == "POST":
+        post.delete()
+        messages.success(request, "Пост успешно удален.")
+        return redirect('thread_detail', thread_id=thread_id)
+
+    return render(request, 'post/post_confirm_delete.html', {'post': post})
