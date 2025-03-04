@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create a New Thread</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="title">Thread Title:</label>
+    <input type="text" name="title" id="title" required>
+    <button type="submit" class="btn btn-primary">Create Thread</button>
+</form>
+<a href="{% url 'forum_list' %}" class="btn btn-secondary">Back to Threads</a>
+{% endblock %}

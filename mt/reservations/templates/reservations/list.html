@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Reservations</h2>
+<ul>
+    {% for reservation in reservations %}
+    <li>
+        <a href="{% url 'reservation_detail' reservation.id %}">
+            Reservation #{{ reservation.id }} - {{ reservation.date }}
+        </a>
+    </li>
+    {% empty %}
+    <p>No reservations found.</p>
+    {% endfor %}
+</ul>
+{% endblock %}

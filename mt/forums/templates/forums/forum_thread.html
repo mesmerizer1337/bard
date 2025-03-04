@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ thread.title }}</h2>
+<a href="{% url 'create_post' thread.id %}" class="btn btn-success">Reply</a>
+<ul>
+    {% for post in posts %}
+    <li><strong>{{ post.author.username }}</strong> ({{ post.created_at }}): {{ post.content }}</li>
+    {% empty %}
+    <li>No posts yet.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'forum_list' %}" class="btn btn-secondary">Back to Threads</a>
+{% endblock %}
