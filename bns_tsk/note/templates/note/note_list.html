@@ -1,0 +1,10 @@
+{% for note in notes %}
+<h2><a href="{% url 'note_detail' note.id %}">{{ note.title }}</a></h2>
+<p>{{ note.content }}</p>
+<a href="{% url 'note_update' note.id %}">edit</a>
+<form action="{% url 'note_delete' note.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+{% endfor %}
+<a href="{% url 'note_create' %}">Add list</a>
